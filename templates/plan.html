@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>План зала</title>
+
+<style>
+body{
+    margin:0;
+    background:#ffffff;
+    display:flex;
+    justify-content:center;
+
+    height:100vh;
+}
+
+.plan-wrapper{
+    width:115vw;          /* вот здесь, уважаемый будущий редактор моей программы, регулируется масштаб, если чо */
+    max-width:1200px;
+}
+
+.plan-wrapper svg{
+    width:100%;
+    height:auto;
+}
+</style>
+</head>
+
+<body>
+
+<div class="plan-wrapper">
+    {{ svg_content | safe }}
+</div>
+
+
+</body>
+
+</html>
