@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <title>Распределение официантов</title>
+
+    <style>
+        :root {
+            --bg: #0b0b0b;
+            --card: #151515;
+            --gold: #c7a53b;
+            --gold-dark: #b8932f;
+            --text: #e8dfc7; /* основной текст (тёплый) */
+            --text-soft: #d6c9a8; /* вторичный */
+            --muted: #a89b78; /* подписи */
+
+            --border: #2a2a2a;
+        }
+
+
+        body {
+            margin: 0;
+            padding: 24px;
+            background: var(--bg);
+            color: var(--text);
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        /* ===== Заголовки ===== */
+
+        h2 {
+            font-family: "Georgia", serif;
+            font-size: 32px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        h3, h4 {
+            font-family: "Georgia", serif;
+            color: var(--gold);
+            letter-spacing: 1px;
+        }
+
+        /* ===== Layout ===== */
+
+        .row {
+            display: flex;
+            gap: 28px;
+            align-items: flex-start;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px;
+            box-shadow: 0 0 25px rgba(0,0,0,0.6);
+        }
+
+        /* ===== СКРОЛЛБАР ===== */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #111;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #2a2a2a;
+            border-radius: 8px;
+            border: 2px solid #111;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3a2f16;
+        }
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-color: #151515;
+            color: var(--text-soft);
+            border: 1px solid #222;
+            border-radius: 10px;
+            padding: 6px 28px 6px 10px;
+            background-image: url("data:image/svg+xml;utf8,<svg fill='%23b8932f' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M5 7l5 5 5-5'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 14px;
+        }
+        select:disabled,
+        select[style*="pointer-events: none"] {
+            background-color: #121212 !important;
+            color: #6f6548 !important;
+            border-color: #1c1c1c !important;
+        }
+
+        input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            background: #141414;
+            border: 1px solid #2a2a2a;
+            cursor: pointer;
+            position: relative;
+            transition: 0.2s ease;
+        }
+
+        input[type="checkbox"]:hover {
+            border-color: #3a2f16;
+            background: #171717;
+        }
+
+        input[type="checkbox"]:checked {
+            background: #1a1a1a;
+            border-color: #b8932f;
+        }
+
+        /* галочка хехе */
+        input[type="checkbox"]:checked::after {
+            content: "";
+            position: absolute;
+            left: 4px;
+            top: 1px;
+            width: 5px;
+            height: 10px;
+            border: solid #c7a53b;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: #1a1a1a;
+            color: var(--gold);
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        .clickable-row:hover {
+            background: #1c1c1c;
+        }
+
+
+        .btn {
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--gold);
+            color: #000;
+            border: none;
+        }
+
+            .btn-primary:hover {
+                background: var(--gold-dark);
+            }
+
+        .btn:not(.btn-primary) {
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            background: transparent;
+        }
+
+            .btn:not(.btn-primary):hover {
+                background: rgba(199,165,59,0.15);
+            }
+
+
+        select, input[type="date"] {
+            background: #1c1c1c;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 8px;
+        }
+
+        input[type="checkbox"] {
+            transform: scale(1.2);
+            accent-color: var(--gold);
+        }
+
+
+        .muted {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .error {
+            background: #2a1a1a;
+            border: 1px solid #6b2e2e;
+            padding: 12px;
+            border-radius: 10px;
+            color: #ffb3b3;
+        }
+
+        .pill {
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+    </style>
+
+</head>
+
+<body>
+<h2>Распределение официантов</h2>
+
+<div class="muted">
+  Филлер.
+</div>
+
+{% if error %}
+<div class="error" style="margin-top:12px;">
+  <b>Ошибка:</b> {{ error }}
+</div>
+{% endif %}
+
+<div class="row" style="margin-top: 12px;">
+
+<div class="card" style="flex: 2;">
+<form method="post" action="/assign">
+
+<div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
+  <label>
+    Дата:
+    <input type="date" name="shift_date" value="{{ selected_date }}">
+  </label>
+
+  <label>
+    Тип смены:
+    <select name="shift_type">
+      <option value="weekday" {% if selected_shift_type=="weekday" %}selected{% endif %}>Будни</option>
+      <option value="weekend" {% if selected_shift_type=="weekend" %}selected{% endif %}>Пт/Сб/Вс</option>
+    </select>
+  </label>
+
+  <button class="btn btn-primary" type="submit">Распределить</button>
+</div>
+
+<div style="margin-top:8px;">
+  Выбрано официантов: 
+  <b><span id="selectedCount">0</span></b>
+</div>
+
+<div style="margin-top:12px; max-height:65vh; overflow:auto; border:1px solid #1c1c1c; border-radius:14px; background:#121212;">
+
+<table>
+<thead>
+<tr>
+  <th style="width:60px;">Вышел</th>
+  <th>ФИО</th>
+  <th style="width:150px;">Locked зона</th>
+  <th style="width:150px;">Locked позиция</th>
+</tr>
+</thead>
+
+<tbody>
+{% for wid, name in waiters.items() %}
+<tr class="clickable-row">
+<td>
+  <input type="checkbox" name="present" value="{{ wid }}"
+    {% if wid in selected_present %}checked{% endif %}>
+</td>
+
+<td>{{ name }}</td>
+
+<input type="hidden" name="req_wid" value="{{ wid }}">
+
+<td>
+<select name="req_zone" class="zoneSelect" data-wid="{{ wid }}">
+  <option value="-" {% if selected_req_zone.get(wid)=='-' %}selected{% endif %}>—</option>
+  <option value="Main" {% if selected_req_zone.get(wid)=='Main' %}selected{% endif %}>Основной</option>
+  <option value="Small" {% if selected_req_zone.get(wid)=='Small' %}selected{% endif %}>Малый</option>
+  <option value="Far" {% if selected_req_zone.get(wid)=='Far' %}selected{% endif %}>Дальний</option>
+  <option value="Veranda" {% if selected_req_zone.get(wid)=='Veranda' %}selected{% endif %}>Веранда</option>
+</select>
+</td>
+
+<td>
+<select name="req_pos" class="posSelect" data-wid="{{ wid }}">
+  <option value="-">—</option>
+  {% for p in main_positions %}
+    <option value="{{ p }}" {% if selected_req_pos.get(wid)|int == p %}selected{% endif %}>
+      {{ p }}
+    </option>
+  {% endfor %}
+</select>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</form>
+</div>
+
+<div class="card" style="flex: 1;">
+    <h3>Результат</h3>
+
+    {% if result %}
+    <div class="result-grid">
+
+        <div class="card">
+            <h4>Основной</h4>
+            <ul>
+                {% for wid, a in result.items() %}
+                {% if a.zone == 'Main' %}
+                <li><span class="pill zone-Main">П{{ a.position }}</span> {{ waiters[wid] }}</li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="card">
+            <h4>Малый</h4>
+            <ul>
+                {% for wid, a in result.items() %}
+                {% if a.zone == 'Small' %}
+                <li>{{ waiters[wid] }}</li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="card">
+            <h4>Дальний</h4>
+            <ul>
+                {% for wid, a in result.items() %}
+                {% if a.zone == 'Far' %}
+                <li>{{ waiters[wid] }}</li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="card">
+            <h4>Веранда</h4>
+            <ul>
+                {% for wid, a in result.items() %}
+                {% if a.zone == 'Veranda' %}
+                <li>{{ waiters[wid] }}</li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+
+    <form method="post" action="/save" style="margin-top:12px;">
+        <input type="hidden" name="shift_date" value="{{ selected_date }}">
+        <input type="hidden" name="shift_type" value="{{ selected_shift_type }}">
+        <input type="hidden" name="result_json" value="{{ result_json|e }}">
+        <button class="btn btn-primary" type="submit">Сохранить располянку</button>
+    </form>
+
+
+
+    {% else %}
+    <div class="muted">Отметь, кто вышел, и нажми «Распределить»</div>
+    {% endif %}
+    <a href="/plan" target="_blank" class="btn" style="margin-top:8px; display:inline-block;">
+        Открыть план зала
+    </a>
+    <a href="/position-stats" class="btn" style="margin-top:8px; display:inline-block;">
+        Скачать статистику позиций
+    </a>
+</div>
+
+</div>
+
+<script>
+function syncPos() {
+  document.querySelectorAll(".zoneSelect").forEach(z => {
+    const wid = z.dataset.wid;
+    const p = document.querySelector('.posSelect[data-wid="'+wid+'"]');
+    if (!p) return;
+        if (z.value !== "Main") {
+            p.value = "-";
+            p.style.pointerEvents = "none";
+            p.style.backgroundColor = "#f3f3f3";
+        } else {
+            p.style.pointerEvents = "auto";
+            p.style.backgroundColor = "";
+        }
+
+    });
+}
+
+function updateCount() {
+  const count = document.querySelectorAll('input[name="present"]:checked').length;
+  document.getElementById("selectedCount").innerText = count;
+}
+
+syncPos();
+updateCount();
+
+document.querySelectorAll(".zoneSelect").forEach(z =>
+  z.addEventListener("change", syncPos)
+);
+
+document.querySelectorAll('input[name="present"]').forEach(cb =>
+  cb.addEventListener("change", updateCount)
+);
+
+document.querySelectorAll("tr.clickable-row").forEach(row => {
+  row.addEventListener("click", e => {
+    if (["INPUT","SELECT","OPTION"].includes(e.target.tagName)) return;
+    const cb = row.querySelector('input[type="checkbox"]');
+    cb.checked = !cb.checked;
+    updateCount();
+  });
+});
+</script>
+<footer style="
+    margin-top:40px;
+    padding-top:20px;
+    border-top:1px solid #1a1a1a;
+    text-align:center;
+    font-size:12px;
+    color:#7a6b45;
+">
+    © 2026 VovaMark. All rights reserved.
+</footer>
+
+</body>
+</html>
